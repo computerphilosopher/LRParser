@@ -171,6 +171,8 @@ public:
 		case ')':
 			return RIGHT_PAREN;
 			break;
+		case '\0':
+			return END_OF_STRING;
 		}
 		
 		return ERROR;
@@ -200,6 +202,9 @@ public:
 				break;
 			case RIGHT_PAREN:
 				ret.append("(");
+				break;
+			case END_OF_STRING:
+				ret.append("$");
 				break;
 			case E:
 				ret.append("E");
@@ -258,7 +263,7 @@ public:
 
 		parsingStack.push(cur_state);
 
-		while (input[i] != '\0') {
+		while (true) {
 
 			int symbol = GetSymbol(input[i]);
 			Action action = GetAction(cur_state, input[i]);
