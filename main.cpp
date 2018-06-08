@@ -88,9 +88,6 @@ LRParser::LRParser(string input) {
 	this->input = input;
 }
 
-void LRParser::Reduce() {
-
-}
 
 int LRParser::GetSymbol(char c) {
 	switch (c) {
@@ -202,8 +199,23 @@ int LRParser::Shift(Action action, int symbol) {
 	return cur_state;
  }
 
-void Reduce() {
+int LRParser::Reduce(Action action) {
+	int k = Rule::GetRHSCount(action);
+	int cur_state = 0;
 
+	for (int j = 0; j < k * 2; j++) {
+		parsingStack.pop();
+	}
+
+	cur_state = parsingStack.top();
+	int lhs = Rule::GetLHS(action);
+	parsingStack.push(lhs);
+
+	int new_state = gotoTable[cur_state][lhs - E];
+	parsingStack.push(new_state);
+	cur_state = new_state;
+
+	return cur_state;
 }
 
 void LRParser::Run() {
@@ -227,20 +239,7 @@ void LRParser::Run() {
 		}
 
 		else if (action.GetType() == "reduce") {
-
-			int k = Rule::GetRHSCount(action);
-
-			for (int j = 0; j < k * 2; j++) {
-				parsingStack.pop();
-			}
-
-			cur_state = parsingStack.top();
-			int lhs = Rule::GetLHS(action);
-			parsingStack.push(lhs);
-
-			int new_state = gotoTable[cur_state][lhs - E];
-			parsingStack.push(new_state);
-			cur_state = new_state;
+			cur_state = Reduce(action);
 		}
 
 		else if (action.GetType() == "accept") {
