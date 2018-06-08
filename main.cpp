@@ -2,35 +2,10 @@
 #include <stack>
 #include <string>
 #include <vector>
+#include "enums.h" 
 
 using namespace std;
-
-enum COUNT {
-	TERMINAL_COUNT = 6,
-	NONTERMINAL_COUNT = 7,
-	STATE_COUNT = 12
-};
-
-enum STATE {
-	ERROR = -1,
-	ACCEPT = 12
-};
-
-enum Terminal {
-	ID = 11,
-	ADD,
-	MUL,
-	LEFT_PAREN,
-	RIGHT_PAREN,
-	END_OF_STRING
-};
-
-enum NonTerminal {
-	E = 100,
-	T,
-	F
-};
-
+ 
 class Action {
 
 private:
@@ -42,9 +17,8 @@ public:
 
 	}
 	
-	Action(string type, int num) {
-		
-			this->type = type;
+	Action(string type, int num) {	
+		this->type = type;
 		this->num = num;
 	}
 
@@ -60,34 +34,7 @@ public:
 		GetState();
 	}
 };
-
-const Action actionTable[STATE_COUNT][TERMINAL_COUNT] = {
-	//0
-	Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
-	//1
-	Action("error", ERROR), Action("shift", 6), Action("error", ERROR), Action("error", ERROR), Action("error", ERROR), Action("accept", ACCEPT),
-	//2
-	Action("error", ERROR), Action("reduce", 2), Action("shift", 7), Action("error", ERROR), Action("reduce", 2),  Action("reduce", 2),
-	//3
-	Action("error", ERROR), Action("reduce",4), Action("reduce", 4), Action("error", ERROR), Action("reduce", 4), Action("reduce", 4),
-	//4
-	Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
-	//5
-	Action("error", ERROR), Action("reduce", 6), Action("reduce",6), Action("error", ERROR), Action("reduce",6), Action("reduce", 6),
-	//6
-	Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
-	//7
-	Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
-	//8
-	Action("error", ERROR), Action("shift", 6), Action("error", ERROR), Action("error", ERROR), Action("shift", 11), Action("error", ERROR),
-	//9
-	Action("error", ERROR), Action("reduce", 1), Action("shift", 7), Action("error", ERROR), Action("reduce", 1), Action("reduce", 1),
-	//10
-	Action("error", ERROR), Action("reduce", 3), Action("reduce", 3), Action("error", ERROR), Action("reduce", 3), Action("reduce", 3),
-	//11
-	Action("error", ERROR), Action("reduce", 5), Action("reduce", 5), Action("error", ERROR), Action("reduce", 5), Action("reduce", 5),
-};
-
+ 
 class Rule {
 
 private:
@@ -155,28 +102,180 @@ public:
 class LRParser {
 private:
 	string input;
-	stack<int> stack;
+	stack<int> parsingStack;
 
-	int curr_input_ptr;
+	const Action actionTable[STATE_COUNT][TERMINAL_COUNT] = {
+		//0
+		Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
+		//1
+		Action("error", ERROR), Action("shift", 6), Action("error", ERROR), Action("error", ERROR), Action("error", ERROR), Action("accept", ACCEPT),
+		//2
+		Action("error", ERROR), Action("reduce", 2), Action("shift", 7), Action("error", ERROR), Action("reduce", 2),  Action("reduce", 2),
+		//3
+		Action("error", ERROR), Action("reduce",4), Action("reduce", 4), Action("error", ERROR), Action("reduce", 4), Action("reduce", 4),
+		//4
+		Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
+		//5
+		Action("error", ERROR), Action("reduce", 6), Action("reduce",6), Action("error", ERROR), Action("reduce",6), Action("reduce", 6),
+		//6
+		Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
+		//7
+		Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
+		//8
+		Action("error", ERROR), Action("shift", 6), Action("error", ERROR), Action("error", ERROR), Action("shift", 11), Action("error", ERROR),
+		//9
+		Action("error", ERROR), Action("reduce", 1), Action("shift", 7), Action("error", ERROR), Action("reduce", 1), Action("reduce", 1),
+		//10
+		Action("error", ERROR), Action("reduce", 3), Action("reduce", 3), Action("error", ERROR), Action("reduce", 3), Action("reduce", 3),
+		//11
+		Action("error", ERROR), Action("reduce", 5), Action("reduce", 5), Action("error", ERROR), Action("reduce", 5), Action("reduce", 5),
+	};
+
+	const int gotoTable[STATE_COUNT][NONTERMINAL_COUNT] = {
+		1, 2, 3,
+		ERROR, ERROR, ERROR,
+		ERROR, ERROR, ERROR,
+		ERROR, ERROR, ERROR,
+		8, 2, 3,
+		ERROR, ERROR, ERROR,
+		ERROR, 9, 3,
+		ERROR, ERROR, 10,
+		ERROR, ERROR, ERROR,
+		ERROR, ERROR, ERROR,
+		ERROR, ERROR, ERROR,
+		ERROR, ERROR, ERROR,
+	};
 
 public:
+	
 	LRParser(string input) {
 		this->input = input;
-
-		curr_input_ptr = 0;
-	}
-
-	void Shift() {
-
 	}
 
 	void Reduce() {
 
 	}
 
-	int GetAction() {
+	int GetSymbol(char c) {
+		switch (c) {
+		case 'a':
+			return ID;
+			break;
+		case '+':
+			return ADD;
+			break;
+		case '*':
+			return MUL;
+			break;
+		case '(':
+			return LEFT_PAREN;
+			break;
+		case ')':
+			return RIGHT_PAREN;
+			break;
+		}
+		
+		return ERROR;
+	}
 
+	/*
+	string PrintStack() {
+		stack <int> temp;
+		temp = parsingStack;
+
+		string ret;
+
+		while (!temp.empty()) {
+			ret.append(temp.top());
+			temp.pop();
+		}
+		return ret;
+	}
+	*/
+	
+	string PrintInput(int idx) {
+		return input.substr(idx, input.length() - idx);
+	}
+
+	string PrintAction(Action action) {
+		return action.GetType() + " ";
+	}
+
+	Action GetAction(int state, char c) {
+
+		int symbol = GetSymbol(c);
+
+		if (symbol == ERROR) {
+			return Action("error", ERROR);
+		}
+		else {
+			return actionTable[state][symbol];
+		}
+	}
+
+	void Run() {
+
+		int i = 0;
+		int cur_state = 0;
+
+		int step = 0;
+
+		parsingStack.push(cur_state);
+
+		while (input[i] != '\0') {
+
+			Action action = GetAction(cur_state, input[i]);
+
+			if (action.GetType() == "shift") {
+
+				int symbol = GetSymbol(input[i]);
+				cur_state = action.GetState();
+
+				parsingStack.push(symbol);
+				parsingStack.push(action.GetState);
+
+				i++;
+			}
+			else if (action.GetType() == "reduce") {
+
+				int k = Rule::getRHSCount(action);
+
+				for (int j = 0; j < k * 2; j++) {
+					parsingStack.pop();
+				}
+
+				int lhs = Rule::getLHS(action);
+				parsingStack.push(lhs);
+
+				cur_state = gotoTable[cur_state][lhs];
+
+			}
+			
+			else if (action.GetType() == "accept") {
+				cur_state = ACCEPT;
+			}
+			else if (action.GetType() == "error") {
+				cur_state = ERROR;
+			}
+			else {
+				cur_state = ERROR;
+			}
+
+			step++;
+			cout << step << "\t" << PrintStack() << "\t" << PrintInput(i) << "\t" << PrintAction << endl;
+
+		}
 	}
 
 };
+
+int main() {
+	
+	string input = "a*a+a";
+	LRParser parser(input);
+
+	parser.Run();
+
+
+}
 
