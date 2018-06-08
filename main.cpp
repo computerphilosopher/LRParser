@@ -2,6 +2,7 @@
 #include <stack>
 #include <string>
 #include <vector>
+#include <sstream>
 #include "enums.h" 
 
 using namespace std;
@@ -13,9 +14,6 @@ private:
 	int num; // state or rule number
 
 public:
-	Action() {
-
-	}
 	
 	Action(string type, int num) {	
 		this->type = type;
@@ -31,7 +29,7 @@ public:
 	}
 
 	int GetRuleNumber() {
-		GetState();
+		return GetState();
 	}
 };
  
@@ -104,7 +102,7 @@ private:
 	string input;
 	stack<int> parsingStack;
 
-	const Action actionTable[STATE_COUNT][TERMINAL_COUNT] = {
+	Action actionTable[STATE_COUNT][TERMINAL_COUNT] = {
 		//0
 		Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
 		//1
@@ -178,7 +176,6 @@ public:
 		return ERROR;
 	}
 
-	/*
 	string PrintStack() {
 		stack <int> temp;
 		temp = parsingStack;
@@ -186,13 +183,40 @@ public:
 		string ret;
 
 		while (!temp.empty()) {
-			ret.append(temp.top());
+			int k = temp.top();
+
+			switch (k) {
+			case ID:
+				ret.append("a");
+				break;
+			case E:
+				ret.append("E");
+				break;
+			case T:
+				ret.append("T");
+				break;
+			case F:
+				ret.append("F");
+				break;
+			default:
+				std::string out_string;
+				std::stringstream ss;
+				ss << k;
+				ret.append(ss.str());
+			}
 			temp.pop();
 		}
-		return ret;
+
+		string reverse;
+
+		int j = 0;
+		
+		for (int i = ret.length()-1; i >= 0; i--) {	
+			reverse.append(ret.substr(i, 1));
+		}
+		return reverse;
 	}
-	*/
-	
+
 	string PrintInput(int idx) {
 		return input.substr(idx, input.length() - idx);
 	}
@@ -209,7 +233,7 @@ public:
 			return Action("error", ERROR);
 		}
 		else {
-			return actionTable[state][symbol];
+			return actionTable[state][symbol-ID];
 		}
 	}
 
@@ -224,18 +248,19 @@ public:
 
 		while (input[i] != '\0') {
 
+			int symbol = GetSymbol(input[i]);
 			Action action = GetAction(cur_state, input[i]);
 
 			if (action.GetType() == "shift") {
 
-				int symbol = GetSymbol(input[i]);
 				cur_state = action.GetState();
 
 				parsingStack.push(symbol);
-				parsingStack.push(action.GetState);
+				parsingStack.push(action.GetState());
 
 				i++;
 			}
+
 			else if (action.GetType() == "reduce") {
 
 				int k = Rule::getRHSCount(action);
@@ -247,10 +272,10 @@ public:
 				int lhs = Rule::getLHS(action);
 				parsingStack.push(lhs);
 
-				cur_state = gotoTable[cur_state][lhs];
-
+				cur_state = gotoTable[cur_state][lhs-E];
+				i++;
 			}
-			
+
 			else if (action.GetType() == "accept") {
 				cur_state = ACCEPT;
 			}
@@ -261,8 +286,12 @@ public:
 				cur_state = ERROR;
 			}
 
+			cout << PrintStack() <<"\t" << PrintInput(i) << "\t" << PrintAction(action) << "\t" << action.GetState() << endl;
+
 			step++;
-			cout << step << "\t" << PrintStack() << "\t" << PrintInput(i) << "\t" << PrintAction << endl;
+			if (cur_state == ERROR || cur_state == ACCEPT) {
+				break;
+			}
 
 		}
 	}
@@ -270,12 +299,13 @@ public:
 };
 
 int main() {
-	
+
 	string input = "a*a+a";
 	LRParser parser(input);
 
 	parser.Run();
 
+	getchar();
 
 }
 
