@@ -273,7 +273,7 @@ public:
 				parsingStack.push(lhs);
 
 				cur_state = gotoTable[cur_state][lhs-E];
-				i++;
+				parsingStack.push(cur_state);
 			}
 
 			else if (action.GetType() == "accept") {
@@ -290,6 +290,7 @@ public:
 
 			step++;
 			if (cur_state == ERROR || cur_state == ACCEPT) {
+				cout << cur_state << endl;
 				break;
 			}
 
