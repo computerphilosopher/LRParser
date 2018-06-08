@@ -150,7 +150,7 @@ public:
 		this->input = input;
 	}
 
-	void Reduce() {
+	void Reduce(){
 
 	}
 
@@ -188,6 +188,18 @@ public:
 			switch (k) {
 			case ID:
 				ret.append("a");
+				break;
+			case ADD:
+				ret.append("+");
+				break;
+			case MUL:
+				ret.append("*");
+				break;
+			case LEFT_PAREN:
+				ret.append("(");
+				break;
+			case RIGHT_PAREN:
+				ret.append("(");
 				break;
 			case E:
 				ret.append("E");
@@ -269,11 +281,14 @@ public:
 					parsingStack.pop();
 				}
 
+				cur_state = parsingStack.top();
 				int lhs = Rule::getLHS(action);
 				parsingStack.push(lhs);
 
-				cur_state = gotoTable[cur_state][lhs-E];
-				parsingStack.push(cur_state);
+			//	cout << "goto[" << cur_state  << "][" << lhs-E <<"]"<< endl; 
+				int new_state = gotoTable[cur_state][lhs-E];
+				parsingStack.push(new_state);
+				cur_state = new_state;
 			}
 
 			else if (action.GetType() == "accept") {
