@@ -228,6 +228,7 @@ void LRParser::Run() {
 	parsingStack.push(cur_state);
 
 	cout << "Stack" << "\t" << "Input" << "\t" << "Action" << endl;
+	
 	while (true) {
 
 		int symbol = GetSymbol(input[i]);
@@ -254,6 +255,7 @@ void LRParser::Run() {
 
 		cout << PrintStack() << "\t" << PrintInput(i) << "\t" << PrintAction(action) << "\t" << action.GetState() << endl;
 		step++;
+		
 		if (cur_state == ERROR) {
 			cout << "에러 스트링" << endl;
 			break;
