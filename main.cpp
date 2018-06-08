@@ -192,6 +192,20 @@ Action LRParser::GetAction(int state, char c) {
 	}
 }
 
+int LRParser::Shift(Action action, int symbol) {
+	
+	int cur_state = action.GetState();
+
+	parsingStack.push(symbol);
+	parsingStack.push(action.GetState());
+
+	return cur_state;
+ }
+
+void Reduce() {
+
+}
+
 void LRParser::Run() {
 
 	int i = 0;
@@ -208,12 +222,7 @@ void LRParser::Run() {
 		Action action = GetAction(cur_state, input[i]);
 
 		if (action.GetType() == "shift") {
-
-			cur_state = action.GetState();
-
-			parsingStack.push(symbol);
-			parsingStack.push(action.GetState());
-
+			cur_state = Shift(action, symbol);
 			i++;
 		}
 
@@ -229,7 +238,6 @@ void LRParser::Run() {
 			int lhs = Rule::GetLHS(action);
 			parsingStack.push(lhs);
 
-			//	cout << "goto[" << cur_state  << "][" << lhs-E <<"]"<< endl; 
 			int new_state = gotoTable[cur_state][lhs - E];
 			parsingStack.push(new_state);
 			cur_state = new_state;
