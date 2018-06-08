@@ -6,15 +6,19 @@
 using namespace std;
 
 enum COUNT {
-
 	TERMINAL_COUNT = 6,
 	NONTERMINAL_COUNT = 7,
-	STATE_COUNT = 11
+	STATE_COUNT = 12
+};
+
+enum STATE {
+	ERROR = -1,
+	ACCEPT = 12
 };
 
 enum Terminal {
 	ID = 11,
-	PLUS,
+	ADD,
 	MUL,
 	LEFT_PAREN,
 	RIGHT_PAREN,
@@ -40,15 +44,7 @@ public:
 	
 	Action(string type, int num) {
 		
-		try {
 			this->type = type;
-			if (type != "shift" && type != "reduce") {
-				throw type;
-			}
-		}
-		catch (string exception) {
-			cout << "타입은 shift와  reduce중 하나여야 합니다" << endl;
-		}
 		this->num = num;
 	}
 
@@ -66,7 +62,30 @@ public:
 };
 
 const Action actionTable[STATE_COUNT][TERMINAL_COUNT] = {
-	Action("shift", 5),
+	//0
+	Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
+	//1
+	Action("error", ERROR), Action("shift", 6), Action("error", ERROR), Action("error", ERROR), Action("error", ERROR), Action("accept", ACCEPT),
+	//2
+	Action("error", ERROR), Action("reduce", 2), Action("shift", 7), Action("error", ERROR), Action("reduce", 2),  Action("reduce", 2),
+	//3
+	Action("error", ERROR), Action("reduce",4), Action("reduce", 4), Action("error", ERROR), Action("reduce", 4), Action("reduce", 4),
+	//4
+	Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
+	//5
+	Action("error", ERROR), Action("reduce", 6), Action("reduce",6), Action("error", ERROR), Action("reduce",6), Action("reduce", 6),
+	//6
+	Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
+	//7
+	Action("shift", 5), Action("error", ERROR), Action("error", ERROR), Action("shift", 4), Action("error", ERROR), Action("error", ERROR),
+	//8
+	Action("error", ERROR), Action("shift", 6), Action("error", ERROR), Action("error", ERROR), Action("shift", 11), Action("error", ERROR),
+	//9
+	Action("error", ERROR), Action("reduce", 1), Action("shift", 7), Action("error", ERROR), Action("reduce", 1), Action("reduce", 1),
+	//10
+	Action("error", ERROR), Action("reduce", 3), Action("reduce", 3), Action("error", ERROR), Action("reduce", 3), Action("reduce", 3),
+	//11
+	Action("error", ERROR), Action("reduce", 5), Action("reduce", 5), Action("error", ERROR), Action("reduce", 5), Action("reduce", 5),
 };
 
 class Rule {
@@ -77,7 +96,9 @@ public:
 
 	}
 
-	static int getRHSCount(int ruleNumber){
+	static int getRHSCount(Action action){
+
+		int ruleNumber = action.GetRuleNumber();
 
 		switch (ruleNumber) {
 		case 1:
@@ -96,27 +117,35 @@ public:
 			return 3;
 			break;
 		case 6:
-			return 2;
+			return 1;
 			break;
 		}
 	}
 
-	static vector<int> getLHS(const vector<int> &rhs) {
- 
-	}
-	
-	static int getLHS(int rhs) {
- 
-		switch (rhs) {
-		case T:
+	static int getLHS(Action action) {
+
+		int ruleNumber = action.GetRuleNumber();
+
+		switch (ruleNumber) {
+		
+		case 1:
 			return E;
 			break;
-		case F:
+		case 2:
+			return E;
+			break;
+		case 3:
 			return T;
 			break;
-		case ID:
+		case 4:
+			return T;
+			break;
+		case 5:
 			return F;
-			break; 
+			break;
+		case 6:
+			return F;
+			break;
 		}
 	}
 
