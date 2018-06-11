@@ -96,3 +96,16 @@ public:
 	void Run();
 
 };
+
+
+class FileWriter {
+
+private:
+	string target;
+
+public:
+	FileWriter();
+	FileWriter();
+
+ 
+};
