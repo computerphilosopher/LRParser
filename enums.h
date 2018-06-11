@@ -25,4 +25,11 @@ enum NonTerminal {
 	F
 };
 
+enum ActionEnum{
+	shift,
+	reduce,
+	error,
+	accept
+
+};
 

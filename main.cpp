@@ -8,13 +8,30 @@
 
 using namespace std;
  
-Action::Action(string type, int num) {
+Action::Action(int type, int num) {
 	this->type = type;
 	this->num = num;
 }
 
-string Action::GetType() {
+int Action::GetType() {
 	return type;
+}
+
+string Action::GetTypeString() {
+	switch (type) {
+	case shift:
+		return "shift";
+		break;
+	case reduce:
+		return "shift";
+		break;
+	case accept:
+		return "accept";
+		break;
+	case error:
+		return "error";
+		break;
+	}
 }
 
 int Action::GetState() {
@@ -182,7 +199,7 @@ Action LRParser::GetAction(int state, char c) {
 	int symbol = GetSymbol(c);
 
 	if (symbol == ERROR) {
-		return Action("error", ERROR);
+		return Action(error, ERROR);
 	}
 	else {
 		return actionTable[state][symbol - ID];
@@ -236,19 +253,19 @@ string LRParser::Run() {
 		int symbol = GetSymbol(input[i]);
 		Action action = GetAction(cur_state, input[i]);
 
-		if (action.GetType() == "shift") {
+		if (action.GetType() == shift) {
 			cur_state = Shift(action, symbol);
 			i++;
 		}
 
-		else if (action.GetType() == "reduce") {
+		else if (action.GetType() == reduce) {
 			cur_state = Reduce(action);
 		}
 
-		else if (action.GetType() == "accept") {
+		else if (action.GetType() == accept) {
 			cur_state = ACCEPT;
 		}
-		else if (action.GetType() == "error") {
+		else if (action.GetType() == error) {
 			cur_state = ERROR;
 		}
 		else {
@@ -256,7 +273,7 @@ string LRParser::Run() {
 		}
 
 		char stateNum = action.GetState() + '0';
-		result.append(PrintStack() + t + PrintInput(i) + t + action.GetType() + " " + t + stateNum + "\n");
+		result.append(PrintStack() + t + PrintInput(i) + t + action.GetTypeString() + " " + t + stateNum + "\n");
 		step++;
 
 		if (cur_state == ERROR) {
