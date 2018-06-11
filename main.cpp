@@ -245,8 +245,7 @@ string LRParser::Run() {
 	parsingStack.push(cur_state);
 
 	string t = "\t";
-		string result = "Stack" + t + "Input" + t + "Action";
-	//string result =  "Stack" + "\t" + "Input" + "\t" + "Action";
+	string result = "Stack" + t + "Input" + t + "Action\n";
 
 	while (true) {
 
@@ -334,9 +333,10 @@ int main() {
 
 		cout << result;
 
-		FileWriter fileWriter(result, "a.txt");
+		FileWriter fileWriter("a.txt", result);
 
 		fileWriter.Write();
+
 	}
 
 	getchar();
