@@ -1,4 +1,7 @@
 #pragma once
+
+/* enums. h */
+
 enum COUNT {
 	TERMINAL_COUNT = 6,
 	NONTERMINAL_COUNT = 3,

@@ -1,5 +1,6 @@
 #pragma once
 
+/*Class.h*/
 #include <fstream>
 using namespace std;
 

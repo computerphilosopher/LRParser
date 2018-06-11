@@ -1,3 +1,4 @@
+/* main. cpp*/
 #include <iostream>
 #include <stack>
 #include <string>
@@ -255,23 +256,24 @@ string LRParser::Run() {
 		int actionType = action.GetType();
 
 		switch (actionType) {
+
 		case shift:
 			cur_state = Shift(action, symbol);
 			i++;
 			break;
 
-
 		case reduce:
 			cur_state = Reduce(action);
 			break;
 		
-
 		case accept:
 			cur_state = STATE::ACCEPT;
 			break;
+			
 		case error:
-			cur_state = ERROR;
+			cur_state = STATE::ERROR;
 			break;
+
 		default:
 			cur_state = ERROR;
 			break;
