@@ -252,23 +252,29 @@ string LRParser::Run() {
 		int symbol = GetSymbol(input[i]);
 		Action action = GetAction(cur_state, input[i]);
 
-		if (action.GetType() == shift) {
+		int actionType = action.GetType();
+
+		switch (actionType) {
+		case shift:
 			cur_state = Shift(action, symbol);
 			i++;
-		}
+			break;
 
-		else if (action.GetType() == reduce) {
+
+		case reduce:
 			cur_state = Reduce(action);
-		}
+			break;
+		
 
-		else if (action.GetType() == accept) {
-			cur_state = ACCEPT;
-		}
-		else if (action.GetType() == error) {
+		case accept:
+			cur_state = STATE::ACCEPT;
+			break;
+		case error:
 			cur_state = ERROR;
-		}
-		else {
+			break;
+		default:
 			cur_state = ERROR;
+			break;
 		}
 
 		char stateNum = action.GetState() + '0';
@@ -317,6 +323,8 @@ void FileWriter::Write() {
 
 int main() {
 
+	int loopCount = 1;
+
 	while (1) {
 		string input;
 		cout << "\ninput test string>>";
@@ -333,9 +341,10 @@ int main() {
 
 		cout << result;
 
-		FileWriter fileWriter("a.txt", result);
+		FileWriter fileWriter("out.txt", result);
 
 		fileWriter.Write();
+		loopCount++;
 
 	}
 
