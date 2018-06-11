@@ -269,6 +269,29 @@ void LRParser::Run() {
 	}
 }
 
+FileWriter::FileWriter(string path, string target) {
+
+	this->path = path;
+	this->target = target;
+
+	fout = new ofstream(path);
+
+	if (!fout) {
+		cout << "file no exists" << endl;
+		return;
+	}
+
+ }
+
+FileWriter::~FileWriter() {
+
+	fout->close();
+	free(fout);
+}
+
+void FileWriter::Write(){
+	*fout << target;
+}
 
 int main() {
 
@@ -278,6 +301,5 @@ int main() {
 	parser.Run();
 
 	getchar();
-
 }
 

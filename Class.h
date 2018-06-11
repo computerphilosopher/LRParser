@@ -1,4 +1,6 @@
 #pragma once
+
+#include <fstream>
 using namespace std;
 
 class Action {
@@ -102,10 +104,13 @@ class FileWriter {
 
 private:
 	string target;
+	string path;
+	ofstream *fout;
 
 public:
-	FileWriter();
+	FileWriter(string path, string target);
 	FileWriter();
 
+	void Write();
  
 };
