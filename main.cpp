@@ -227,7 +227,8 @@ string LRParser::Run() {
 
 	parsingStack.push(cur_state);
 
-	string result = "Stack\tInput\tAction";
+	string t = "\t";
+		string result = "Stack" + t + "Input" + t + "Action";
 	//string result =  "Stack" + "\t" + "Input" + "\t" + "Action";
 
 	while (true) {
@@ -254,16 +255,17 @@ string LRParser::Run() {
 			cur_state = ERROR;
 		}
 
-		std::cout << PrintStack() << "\t" << PrintInput(i) << "\t" << PrintAction(action) << "\t" << action.GetState() << endl;
+		char stateNum = action.GetState() + '0';
+		result.append(PrintStack() + t + PrintInput(i) + t + action.GetType() + " " + t + stateNum + "\n");
 		step++;
 
 		if (cur_state == ERROR) {
-			std::cout << "에러 스트링" << endl;
+			result.append("error string");
 			break;
 		}
 
 		if (cur_state == ACCEPT) {
-			std::cout << "Accept!" << endl;
+			result.append("Accept!");
 			break;
 		}
 	}
@@ -302,8 +304,12 @@ int main() {
 	string input = "a*a+a";
 	LRParser parser(input);
 
-	parser.Run();
+	string result = parser.Run();
 
+	FileWriter fileWriter(result, "a.txt");
+
+	fileWriter.Write();
+ 
 	getchar();
 }
 
