@@ -301,15 +301,27 @@ void FileWriter::Write() {
 
 int main() {
 
-	string input = "a*a+a";
-	LRParser parser(input);
+	while (1) {
+		string input;
+		cout << "\ninput test string>>";
 
-	string result = parser.Run();
+		cin >> input;
 
-	FileWriter fileWriter(result, "a.txt");
+		if (input == "exit" || input == "quit") {
+			break;
+		}
 
-	fileWriter.Write();
- 
+		LRParser parser(input);
+
+		string result = parser.Run();
+
+		cout << result;
+
+		FileWriter fileWriter(result, "a.txt");
+
+		fileWriter.Write();
+	}
+
 	getchar();
 }
 
