@@ -95,7 +95,7 @@ public:
 
 	Action GetAction(int state, char c);
 
-	void Run();
+	string Run();
 
 };
 
@@ -109,6 +109,7 @@ private:
 
 public:
 	FileWriter(string path, string target);
+	~FileWriter();
 	FileWriter();
 
 	void Write();

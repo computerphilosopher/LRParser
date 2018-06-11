@@ -218,7 +218,7 @@ int LRParser::Reduce(Action action) {
 	return cur_state;
 }
 
-void LRParser::Run() {
+string LRParser::Run() {
 
 	int i = 0;
 	int cur_state = 0;
@@ -227,8 +227,9 @@ void LRParser::Run() {
 
 	parsingStack.push(cur_state);
 
-	cout << "Stack" << "\t" << "Input" << "\t" << "Action" << endl;
-	
+	string result = "Stack\tInput\tAction";
+	//string result =  "Stack" + "\t" + "Input" + "\t" + "Action";
+
 	while (true) {
 
 		int symbol = GetSymbol(input[i]);
@@ -253,20 +254,21 @@ void LRParser::Run() {
 			cur_state = ERROR;
 		}
 
-		cout << PrintStack() << "\t" << PrintInput(i) << "\t" << PrintAction(action) << "\t" << action.GetState() << endl;
+		std::cout << PrintStack() << "\t" << PrintInput(i) << "\t" << PrintAction(action) << "\t" << action.GetState() << endl;
 		step++;
-		
+
 		if (cur_state == ERROR) {
-			cout << "에러 스트링" << endl;
+			std::cout << "에러 스트링" << endl;
 			break;
 		}
 
 		if (cur_state == ACCEPT) {
-			cout << "Accept!" << endl;
+			std::cout << "Accept!" << endl;
 			break;
 		}
-
 	}
+
+	return result;
 }
 
 FileWriter::FileWriter(string path, string target) {
@@ -277,11 +279,13 @@ FileWriter::FileWriter(string path, string target) {
 	fout = new ofstream(path);
 
 	if (!fout) {
-		cout << "file no exists" << endl;
+		std::cout << "file no exists" << endl;
 		return;
 	}
 
- }
+}
+
+FileWriter::FileWriter() {}
 
 FileWriter::~FileWriter() {
 
@@ -289,7 +293,7 @@ FileWriter::~FileWriter() {
 	free(fout);
 }
 
-void FileWriter::Write(){
+void FileWriter::Write() {
 	*fout << target;
 }
 
