@@ -1,0 +1,4 @@
+Stack	Input	Action
+0a5	aa	shift 	5
+0a5	aa	error 	/
+error string
